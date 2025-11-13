@@ -5,9 +5,9 @@ import { UpdateAuthDto } from './dto/update-auth.dto';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('[Auth] User')
-@Controller({path: 'auth', version: '1'})
+@Controller({ path: 'auth', version: '1' })
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @Post()
   create(@Body() createAuthDto: CreateAuthDto) {

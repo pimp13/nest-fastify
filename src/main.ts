@@ -16,22 +16,25 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
-  // Set swagger api docs
-  const config = new DocumentBuilder()
-    .setTitle('Nest Fastify API')
-    .setDescription('API documentation for Nest-Fastify project')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
-
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  // Set global prefix
+  app.setGlobalPrefix('api');
 
   // Set versioning
   app.enableVersioning({
     type: VersioningType.URI, // می‌تواند URI, HEADER, MEDIA_TYPE باشد
     defaultVersion: '1',
   });
+
+  // Set swagger api docs
+  const config = new DocumentBuilder()
+    .setTitle('Nest Fastify API')
+    .setDescription('API documentation for Nest-Fastify project')
+    .setVersion('1')
+    .addBearerAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document);
+
 
   app.enableCors({
     origin: ['http://localhost:3000'],
