@@ -1,26 +1,71 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { LoginDto, RegisterDto } from './dto/create-auth.dto';
+import bcrypt from 'node_modules/bcryptjs';
+import { User } from '@prisma/client';
+import { RegisterResponseDto } from './dto/response-dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  private readonly logger = new Logger(AuthService.name);
+  constructor(private readonly prisma: PrismaService) {}
+
+  // TODO: Set return type for all response bayad beshe {ok, data, message}
+  async register(bodyData: RegisterDto): Promise<RegisterResponseDto | null> {
+    const { email, name, password } = bodyData;
+
+    this.logger.verbose(`Attempting to register with email: ${email}`);
+
+    const existingUser = await this.findUserByEmail(email);
+    if (existingUser) throw new BadRequestException('Email already exists');
+
+    const hashedPassword = await this.hashPassword(password);
+
+    const user = await this.prisma.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        name,
+      },
+      omit: {
+        password: true,
+      },
+    });
+
+    return plainToInstance(RegisterResponseDto, {
+      email: user.email,
+      joined_at: user.createdAt,
+      name: user.name,
+    });
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  async login(bodyData: LoginDto): Promise<{ accessToken: string }> {
+    const { email, password } = bodyData;
+
+    this.logger.verbose(`Attempting to login with email: ${email}`);
+    const user = await this.findUserByEmail(email);
+    if (!user) throw new BadRequestException('Email or password is incorrect');
+
+    this.logger.verbose('password validation...', password);
+
+    return { accessToken: '1234567890' };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
+  private async findUserByEmail(email: string): Promise<User | null> {
+    return await this.prisma.user.findUnique({
+      where: { email },
+    });
   }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
+  private async verifyPassword(
+    password: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
+    return await bcrypt.compare(password, hashedPassword);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  private async hashPassword(password: string): Promise<string> {
+    return await bcrypt.hash(password, 10);
   }
 }
