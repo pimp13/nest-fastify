@@ -5,11 +5,17 @@ import bcrypt from 'node_modules/bcryptjs';
 import { User } from '@prisma/client';
 import { RegisterResponseDto } from './dto/response-dto';
 import { plainToInstance } from 'class-transformer';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
+  ) {}
+
+  // async validateUser(email: string, pass: string)
 
   // TODO: Set return type for all response bayad beshe {ok, data, message}
   async register(bodyData: RegisterDto): Promise<RegisterResponseDto | null> {
@@ -48,8 +54,15 @@ export class AuthService {
     if (!user) throw new BadRequestException('Email or password is incorrect');
 
     this.logger.verbose('password validation...', password);
+    if (!(await this.verifyPassword(password, user.password)))
+      throw new BadRequestException('Password or email is incorrect');
 
-    return { accessToken: '1234567890' };
+    return {
+      accessToken: this.jwtService.sign({
+        sub: user.id,
+        email: user.email,
+      }),
+    };
   }
 
   private async findUserByEmail(email: string): Promise<User | null> {

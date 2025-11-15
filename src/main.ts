@@ -7,6 +7,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
+import cookie from '@fastify/cookie';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -38,9 +39,15 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
+  // Set CORS
   app.enableCors({
     origin: ['http://localhost:3000'],
     credentials: true,
+  });
+
+  // Set auth cookie token
+  await app.register(cookie as any, {
+    secret: configService.get<string>('AUTH_COOKIE_NAME'),
   });
 
   const PORT = configService.get<number>('PORT') || 9090;
