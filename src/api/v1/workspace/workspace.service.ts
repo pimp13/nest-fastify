@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateWorkspaceDto } from './dto/create-workspace.dto';
 import { UpdateWorkspaceDto } from './dto/update-workspace.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -33,8 +33,15 @@ export class WorkspaceService {
     return this.apiResponse.success({ message: 'WorkSpace is created!' });
   }
 
-  findAll() {
-    return `This action returns all workspace`;
+  async findAll() {
+    const data = await this.prisma.workSpace.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+    if (!data) throw new NotFoundException('WorkSpace Is Not Found!');
+
+    return this.apiResponse.success({ data });
   }
 
   findOne(id: number) {
