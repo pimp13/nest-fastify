@@ -39,7 +39,11 @@ export class WorkspaceService {
         createdAt: 'desc',
       },
       include: {
-        owner: true,
+        owner: {
+          omit: {
+            password: true,
+          },
+        },
       },
     });
     if (!data) throw new NotFoundException('WorkSpace Is Not Found!');
