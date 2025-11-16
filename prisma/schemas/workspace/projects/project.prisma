@@ -1,0 +1,11 @@
+model Project {
+    id           String        @id @default(uuid())
+    name         String
+    slug         String        @unique
+    workSpaceId  String
+    workSpace    WorkSpace     @relation(fields: [workSpaceId], references: [id])
+    createdAt    DateTime      @default(now())
+    updatedAt    DateTime      @updatedAt
+    sections     Section[]
+    projectTeams ProjectTeam[]
+}

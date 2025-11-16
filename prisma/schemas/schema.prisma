@@ -8,16 +8,14 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  projects       Project[]      @relation("ProjectOwner")
-  issuesCreated  Issue[]        @relation("IssueReporter")
-  issuesAssigned Issue[]        @relation("IssueAssignee")
-  comments       IssueComment[]
-  projectRoles   ProjectRole[]
+  id           String        @id @default(uuid())
+  email        String        @unique
+  name         String
+  password     String
+  avatarUrl    String?
+  version      Int           @default(1)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  workSpaces   WorkSpace[]
+  projectTeams ProjectTeam[]
 }

@@ -1,0 +1,9 @@
+model Todo {
+    id        String   @id @default(uuid())
+    title     String
+    status    String   @default("TODO")
+    sectionId String
+    section   Section  @relation(fields: [sectionId], references: [id])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
