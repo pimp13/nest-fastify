@@ -22,7 +22,7 @@ export class WorkspaceController {
   constructor(private readonly workspaceService: WorkspaceService) {}
 
   @Post()
-  create(@Body() createWorkspaceDto: CreateWorkspaceDto, @Req() req) {
+  async create(@Body() createWorkspaceDto: CreateWorkspaceDto, @Req() req) {
     return this.workspaceService.create(createWorkspaceDto, req.user.userId);
   }
 
