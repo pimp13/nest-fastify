@@ -51,7 +51,7 @@ export class WorkspaceService {
     return this.apiResponse.success({ data });
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     return `This action returns a #${id} workspace`;
   }
 
