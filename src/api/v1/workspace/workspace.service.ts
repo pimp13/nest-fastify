@@ -38,6 +38,9 @@ export class WorkspaceService {
       orderBy: {
         createdAt: 'desc',
       },
+      include: {
+        owner: true,
+      },
     });
     if (!data) throw new NotFoundException('WorkSpace Is Not Found!');
 
