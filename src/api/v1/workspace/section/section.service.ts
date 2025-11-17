@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateSectionDto } from './dto/create-section.dto';
 import { UpdateSectionDto } from './dto/update-section.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -23,8 +23,22 @@ export class SectionService {
     return this.apiResponse.success({ message: 'بخش با موفقیت ثبت شد' });
   }
 
-  findAll() {
-    return `This action returns all section`;
+  async findAll() {
+    const data = await this.prisma.section.findMany({
+      include: {
+        project: {
+          include: {
+            workSpace: true,
+          },
+        },
+      },
+      orderBy: {
+        id: 'desc',
+      },
+    });
+    if (!data) throw new NotFoundException('Section is notfound');
+
+    return this.apiResponse.success({ data });
   }
 
   findOne(id: number) {
