@@ -43,6 +43,10 @@ import { DashboardController } from './api/v1/admin/dashboard/dashboard.controll
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AdminMiddleware).forRoutes('admin');
+    consumer.apply(AdminMiddleware).forRoutes({
+      path: 'admin/*',
+      method: RequestMethod.ALL,
+      version: '1',
+    });
   }
 }
