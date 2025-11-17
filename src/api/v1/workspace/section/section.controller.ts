@@ -16,12 +16,12 @@ export class SectionController {
   constructor(private readonly sectionService: SectionService) {}
 
   @Post()
-  create(@Body() createSectionDto: CreateSectionDto) {
+  async create(@Body() createSectionDto: CreateSectionDto) {
     return this.sectionService.create(createSectionDto);
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.sectionService.findAll();
   }
 
