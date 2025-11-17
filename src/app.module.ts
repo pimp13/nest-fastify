@@ -15,6 +15,7 @@ import { ApiResponseModule } from './utils/api-response/api-response.module';
 import { AdminMiddleware } from './common/middleware/admin.middleware';
 import { DashboardModule } from './api/v1/admin/dashboard/dashboard.module';
 import { JwtModule } from '@nestjs/jwt';
+import { DashboardController } from './api/v1/admin/dashboard/dashboard.controller';
 
 @Module({
   imports: [
@@ -42,11 +43,6 @@ import { JwtModule } from '@nestjs/jwt';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(AdminMiddleware)
-      .forRoutes(
-        { path: 'admin', method: RequestMethod.ALL },
-        { path: 'admin/*', method: RequestMethod.ALL },
-      );
+    consumer.apply(AdminMiddleware).forRoutes('admin');
   }
 }
