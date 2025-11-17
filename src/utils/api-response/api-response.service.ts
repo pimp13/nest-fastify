@@ -7,7 +7,7 @@ type ApiResponseParamType = {
 
 @Injectable()
 export class ApiResponseService {
-  ok: boolean;
+  ok!: boolean;
   message?: string;
   data?: any;
 

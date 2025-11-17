@@ -2,11 +2,11 @@ import { Expose } from 'class-transformer';
 
 export class RegisterResponseDto {
   @Expose()
-  email: string;
+  email!: string;
 
   @Expose()
-  name: string;
+  name!: string;
 
   @Expose()
-  joined_at: Date;
+  joined_at!: Date;
 }

@@ -5,7 +5,7 @@ export class CreateProjectDto {
   @ApiProperty()
   @MinLength(4, { message: 'نام فضای کار باید بالای 4 کاراکتر باشه' })
   @MaxLength(190, { message: 'نام فضای کار زیادی طولانی هست' })
-  name: string;
+  name!: string;
 
   @ApiProperty()
   @IsOptional()
@@ -13,5 +13,5 @@ export class CreateProjectDto {
 
   @ApiProperty()
   @IsUUID()
-  workSpaceId: string;
+  workSpaceId!: string;
 }

@@ -5,7 +5,7 @@ export class CreateWorkspaceDto {
   @ApiProperty()
   @MinLength(4, { message: 'نام فضای کار باید بالای 4 کاراکتر باشه' })
   @MaxLength(190, { message: 'نام فضای کار زیادی طولانی هست' })
-  name: string;
+  name!: string;
 
   @ApiProperty()
   @IsOptional()
