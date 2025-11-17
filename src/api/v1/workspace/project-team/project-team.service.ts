@@ -1,8 +1,16 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateProjectTeamDto } from './dto/create-project-team.dto';
 import { UpdateProjectTeamDto } from './dto/update-project-team.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { ApiResponseService } from 'src/utils/api-response/api-response.service';
+import {
+  ApiResponse,
+  ApiResponseService,
+} from 'src/utils/api-response/api-response.service';
 
 @Injectable()
 export class ProjectTeamService {
@@ -13,7 +21,9 @@ export class ProjectTeamService {
     private readonly apiResponse: ApiResponseService,
   ) {}
 
-  async create(bodyData: CreateProjectTeamDto): Promise<ApiResponseService> {
+  async create(
+    bodyData: CreateProjectTeamDto,
+  ): Promise<ApiResponse<{ message: string }>> {
     if (!(await this.existsProjectById(bodyData.projectId)))
       throw new BadRequestException(
         'BodyData is bad request project id is bad.',
@@ -34,8 +44,23 @@ export class ProjectTeamService {
     });
   }
 
-  findAll() {
-    return `This action returns all projectTeam`;
+  async findAll(): Promise<
+    ApiResponse<
+      {
+        id: string;
+        projectId: string;
+        userId: string;
+      }[]
+    >
+  > {
+    const data = await this.prisma.projectTeam.findMany({
+      orderBy: {
+        id: 'desc',
+      },
+    });
+    if (!data) throw new NotFoundException('Project Team is not found!');
+
+    return this.apiResponse.success({ data });
   }
 
   findOne(id: number) {

@@ -16,13 +16,13 @@ export class ProjectTeamController {
   constructor(private readonly projectTeamService: ProjectTeamService) {}
 
   @Post()
-  create(@Body() createProjectTeamDto: CreateProjectTeamDto) {
-    return this.projectTeamService.create(createProjectTeamDto);
+  async create(@Body() createProjectTeamDto: CreateProjectTeamDto) {
+    return await this.projectTeamService.create(createProjectTeamDto);
   }
 
   @Get()
-  findAll() {
-    return this.projectTeamService.findAll();
+  async findAll() {
+    return await this.projectTeamService.findAll();
   }
 
   @Get(':id')

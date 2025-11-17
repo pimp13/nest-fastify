@@ -1,29 +1,37 @@
 import { Injectable } from '@nestjs/common';
 
-type ApiResponseParamType = {
+export type ApiResponseParamType<T> = {
   message?: string;
-  data?: any;
+  data?: T;
 };
+
+export class ApiResponse<T> {
+  ok!: boolean;
+  message?: string;
+  data?: T;
+}
 
 @Injectable()
 export class ApiResponseService {
-  ok!: boolean;
-  message?: string;
-  data?: any;
-
-  success({ message = 'Success', data }: ApiResponseParamType) {
-    return Object.assign(new ApiResponseService(), {
+  success<T>({
+    message = 'Success',
+    data,
+  }: ApiResponseParamType<T>): ApiResponse<T> {
+    return {
       ok: true,
       message,
       data,
-    });
+    };
   }
 
-  error({ message = 'Error', data }: ApiResponseParamType) {
-    return Object.assign(new ApiResponseService(), {
+  error<T>({
+    message = 'Error',
+    data,
+  }: ApiResponseParamType<T>): ApiResponse<T> {
+    return {
       ok: false,
       message,
       data,
-    });
+    };
   }
 }
