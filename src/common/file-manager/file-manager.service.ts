@@ -2,10 +2,9 @@ import { extname, join } from 'path';
 import { promises as fs } from 'fs';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { UploadOptions } from './file-manager.types';
+import { UploadedFile, UploadOptions } from './file-manager.types';
 import { ConfigService } from '@nestjs/config';
 import type { FastifyRequest } from 'fastify';
-import type { Multer } from 'multer';
 import { File, FileFilterCallback } from 'fastify-multer/lib/interfaces';
 
 @Injectable()
@@ -62,16 +61,34 @@ export class FileManagerService {
           );
       },
       storage: {
-        async destination(req: any, file: any, cb: any) {
+        async destination(
+          req: FastifyRequest,
+          file: File,
+          cb: (error: Error | null, destination: string) => void,
+        ) {
           const dest = join(this.uploadPath, opts.folder || '');
           await fs.mkdir(dest, { recursive: true });
           cb(null, dest);
         },
-        filename(req: any, file: any, cb: any) {
+        filename(
+          req: FastifyRequest,
+          file: File,
+          cb: (error: Error | null, destination: string) => void,
+        ) {
           const uniqueName = `${uuidv4()}${extname(file.originalname)}`;
           cb(null, uniqueName);
         },
       },
     };
+  }
+
+  /**
+   * Formating result files
+   */
+  formatFiles(
+    files: File | File[],
+    folder: string = '',
+  ): UploadedFile | UploadedFile[] {
+    // TODO: فعلا ناقص هست تا بعدا عملیات آپلود فایل و رو بنویسم فایل منیجر ایز کامینگ
   }
 }
