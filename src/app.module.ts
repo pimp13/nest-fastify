@@ -13,9 +13,8 @@ import { ApiResponseService } from './utils/api-response/api-response.service';
 import { WorkspaceModule } from './api/v1/workspace/workspace.module';
 import { ApiResponseModule } from './utils/api-response/api-response.module';
 import { AdminMiddleware } from './common/middleware/admin.middleware';
-import { DashboardModule } from './api/v1/admin/dashboard/dashboard.module';
 import { JwtModule } from '@nestjs/jwt';
-import { DashboardController } from './api/v1/admin/dashboard/dashboard.controller';
+import { AdminModule } from './api/v1/admin/admin.module';
 
 @Module({
   imports: [
@@ -36,17 +35,9 @@ import { DashboardController } from './api/v1/admin/dashboard/dashboard.controll
     AuthModule,
     WorkspaceModule,
     ApiResponseModule,
-    DashboardModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService, ApiResponseService],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AdminMiddleware).forRoutes({
-      path: 'admin/*',
-      method: RequestMethod.ALL,
-      version: '1',
-    });
-  }
-}
+export class AppModule {}
