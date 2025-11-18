@@ -12,9 +12,9 @@ import { AuthModule } from './api/v1/auth/auth.module';
 import { ApiResponseService } from './utils/api-response/api-response.service';
 import { WorkspaceModule } from './api/v1/workspace/workspace.module';
 import { ApiResponseModule } from './utils/api-response/api-response.module';
-import { AdminMiddleware } from './common/middleware/admin.middleware';
 import { JwtModule } from '@nestjs/jwt';
 import { AdminModule } from './api/v1/admin/admin.module';
+import { FileManagerModule } from './common/file-manager/file-manager.module';
 
 @Module({
   imports: [
@@ -36,6 +36,7 @@ import { AdminModule } from './api/v1/admin/admin.module';
     WorkspaceModule,
     ApiResponseModule,
     AdminModule,
+    FileManagerModule,
   ],
   controllers: [AppController],
   providers: [AppService, ApiResponseService],

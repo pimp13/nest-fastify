@@ -6,11 +6,15 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
 import { CreateDashboardDto } from './dto/create-dashboard.dto';
 import { UpdateDashboardDto } from './dto/update-dashboard.dto';
+import { AdminGuard } from 'src/common/guard/admin/admin.guard';
+import { JwtGuard } from '../../auth/jwt.guard';
 
+@UseGuards(JwtGuard, AdminGuard)
 @Controller({ path: 'admin/dashboard', version: '1' })
 export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) {}

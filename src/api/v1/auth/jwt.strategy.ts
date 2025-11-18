@@ -20,7 +20,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: any) {
     if (!payload) throw new UnauthorizedException('you not logged');
     // payload = { sub: userId, email: ... }
-    return { userId: payload.sub, email: payload.email };
+    return {
+      userId: payload.sub,
+      email: payload.email,
+      role: payload.role,
+    };
     // این آبجکت به request.user اضافه می‌شود
   }
 }
