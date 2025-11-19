@@ -15,6 +15,7 @@ import { ApiResponseModule } from './utils/api-response/api-response.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AdminModule } from './api/v1/admin/admin.module';
 import { FileManagerModule } from './common/file-manager/file-manager.module';
+import { LearningModule } from './learning/learning.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { FileManagerModule } from './common/file-manager/file-manager.module';
     ApiResponseModule,
     AdminModule,
     FileManagerModule,
+    LearningModule,
   ],
   controllers: [AppController],
   providers: [AppService, ApiResponseService],
