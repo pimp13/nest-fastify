@@ -4,5 +4,6 @@ import { ApiResponseService } from './api-response.service';
 @Global()
 @Module({
   providers: [ApiResponseService],
+  exports: [ApiResponseService],
 })
 export class ApiResponseModule {}

@@ -6,6 +6,7 @@ import { User } from '@prisma/client';
 import { RegisterResponseDto } from './dto/response-dto';
 import { plainToInstance } from 'class-transformer';
 import { JwtService } from '@nestjs/jwt';
+import { ApiResponseService } from 'src/utils/api-response/api-response.service';
 
 @Injectable()
 export class AuthService {
@@ -13,6 +14,7 @@ export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
+    private readonly apiResponse: ApiResponseService,
   ) {}
 
   // async validateUser(email: string, pass: string)
@@ -58,12 +60,25 @@ export class AuthService {
       throw new BadRequestException('Password or email is incorrect');
 
     return {
-      accessToken: this.jwtService.sign({
-        sub: user.id,
-        email: user.email,
-        role: user.role,
-      }),
+      accessToken: this.jwtService.sign(
+        {
+          sub: user.id,
+          email: user.email,
+          role: user.role,
+        },
+        { secret: process.env.JWT_SECRET },
+      ),
     };
+  }
+
+  async finaAllUsers() {
+    const data = await this.prisma.user.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return this.apiResponse.success({ data });
   }
 
   private async findUserByEmail(email: string): Promise<User | null> {

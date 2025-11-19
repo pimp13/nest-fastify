@@ -18,7 +18,6 @@ export class AdminGuard implements CanActivate {
 
     const token = req.cookies?._token;
     if (!token) throw new UnauthorizedException('Not Token Found');
-    console.log('TOKEN IS =>', token);
 
     try {
       // ۲. verify کردن توکن
@@ -37,7 +36,7 @@ export class AdminGuard implements CanActivate {
       return true;
     } catch (err) {
       console.error(`error in admin guard: ${err}`);
-      throw new UnauthorizedException('Invalid or expired token');
+      throw new ForbiddenException(`Error in login in admin panel: ${err}`);
     }
   }
 }

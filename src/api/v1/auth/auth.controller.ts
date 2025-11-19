@@ -49,4 +49,10 @@ export class AuthController {
   getProfile(@Req() req) {
     return req.user;
   }
+
+  // @UseGuards(JwtGuard)
+  @Get('users')
+  async findAllUsers() {
+    return this.authService.finaAllUsers();
+  }
 }
