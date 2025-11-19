@@ -1,0 +1,14 @@
+enum TaskStatus {
+    BACKLOG // در حال قکر و برنامه ریزی
+    IN_PROGRESS // در حال اجر
+    IN_REVIEW // بررسی اولیه و رفع مشکلات
+    FINAL_REVIEW // بررسی نهایی
+    DONE // انجام شده
+}
+
+model Task {
+    id     String     @id @default(uuid())
+    status TaskStatus @default(BACKLOG)
+
+    @@index([status])
+}

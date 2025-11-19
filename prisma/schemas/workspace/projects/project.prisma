@@ -8,4 +8,5 @@ model Project {
     updatedAt    DateTime      @updatedAt
     sections     Section[]
     projectTeams ProjectTeam[]
+    members      Member[]
 }
