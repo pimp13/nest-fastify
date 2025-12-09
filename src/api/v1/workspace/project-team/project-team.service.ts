@@ -6,11 +6,11 @@ import {
 } from '@nestjs/common';
 import { CreateProjectTeamDto } from './dto/create-project-team.dto';
 import { UpdateProjectTeamDto } from './dto/update-project-team.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '@/prisma/prisma.service';
 import {
   ApiResponse,
   ApiResponseService,
-} from 'src/utils/api-response/api-response.service';
+} from '@/utils/api-response/api-response.service';
 
 @Injectable()
 export class ProjectTeamService {

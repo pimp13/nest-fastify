@@ -1,9 +1,9 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateWorkspaceDto } from './dto/create-workspace.dto';
 import { UpdateWorkspaceDto } from './dto/update-workspace.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { ApiResponseService } from 'src/utils/api-response/api-response.service';
-import { slugify } from 'src/utils/slugify';
+import { PrismaService } from '@/prisma/prisma.service';
+import { ApiResponseService } from '@/utils/api-response/api-response.service';
+import { slugify } from '@/utils/slugify';
 
 @Injectable()
 export class WorkspaceService {

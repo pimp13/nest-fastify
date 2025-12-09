@@ -1,8 +1,8 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateSectionDto } from './dto/create-section.dto';
 import { UpdateSectionDto } from './dto/update-section.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { ApiResponseService } from 'src/utils/api-response/api-response.service';
+import { PrismaService } from '@/prisma/prisma.service';
+import { ApiResponseService } from '@/utils/api-response/api-response.service';
 
 @Injectable()
 export class SectionService {

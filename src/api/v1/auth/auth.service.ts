@@ -1,12 +1,12 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '@/prisma/prisma.service';
 import { LoginDto, RegisterDto } from './dto/create-auth.dto';
-import bcrypt from 'node_modules/bcryptjs';
+import { hash, compare } from 'bcryptjs';
 import { User } from '@prisma/client';
 import { RegisterResponseDto } from './dto/response-dto';
 import { plainToInstance } from 'class-transformer';
 import { JwtService } from '@nestjs/jwt';
-import { ApiResponseService } from 'src/utils/api-response/api-response.service';
+import { ApiResponseService } from '@/utils/api-response/api-response.service';
 
 @Injectable()
 export class AuthService {
@@ -91,10 +91,10 @@ export class AuthService {
     password: string,
     hashedPassword: string,
   ): Promise<boolean> {
-    return await bcrypt.compare(password, hashedPassword);
+    return await compare(password, hashedPassword);
   }
 
   private async hashPassword(password: string): Promise<string> {
-    return await bcrypt.hash(password, 10);
+    return await hash(password, 10);
   }
 }
