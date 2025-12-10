@@ -6,7 +6,10 @@ import { User } from '@prisma/client';
 import { RegisterResponseDto } from './dto/response-dto';
 import { plainToInstance } from 'class-transformer';
 import { JwtService } from '@nestjs/jwt';
-import { ApiResponseService } from '@/utils/api-response/api-response.service';
+import {
+  ApiResponse,
+  ApiResponseService,
+} from '@/utils/api-response/api-response.service';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +23,9 @@ export class AuthService {
   // async validateUser(email: string, pass: string)
 
   // TODO: Set return type for all response bayad beshe {ok, data, message}
-  async register(bodyData: RegisterDto): Promise<RegisterResponseDto | null> {
+  async register(
+    bodyData: RegisterDto,
+  ): Promise<ApiResponse<RegisterResponseDto> | null> {
     const { email, name, password } = bodyData;
 
     this.logger.verbose(`Attempting to register with email: ${email}`);
@@ -41,10 +46,13 @@ export class AuthService {
       },
     });
 
-    return plainToInstance(RegisterResponseDto, {
-      email: user.email,
-      joined_at: user.createdAt,
-      name: user.name,
+    return this.apiResponse.success({
+      message: 'Registration was successful, please log in to your account.',
+      data: plainToInstance(RegisterResponseDto, {
+        email: user.email,
+        joined_at: user.createdAt,
+        name: user.name,
+      }),
     });
   }
 
