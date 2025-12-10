@@ -1,9 +1,14 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { LoginDto, RegisterDto } from './dto/create-auth.dto';
 import { hash, compare } from 'bcryptjs';
 import { User } from '@prisma/client';
-import { RegisterResponseDto } from './dto/response-dto';
+import { RegisterResponseDto, UserResponseInfo } from './dto/response-dto';
 import { plainToInstance } from 'class-transformer';
 import { JwtService } from '@nestjs/jwt';
 import {
@@ -77,6 +82,33 @@ export class AuthService {
         { secret: process.env.JWT_SECRET },
       ),
     };
+  }
+
+  async logout(token: string) {
+    const decoded = this.jwtService.verify(token);
+    const expiresIn = decoded.exp * 1000 - Date.now();
+    return {
+      ok: true,
+      message: 'your are logouted',
+    };
+  }
+
+  async findUserInfoById(
+    userId: string,
+  ): Promise<ApiResponse<UserResponseInfo>> {
+    const userInfo = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      omit: {
+        password: true,
+      },
+    });
+    if (!userInfo) throw new NotFoundException('user is not found');
+
+    return this.apiResponse.success({
+      data: userInfo,
+    });
   }
 
   async finaAllUsers() {
