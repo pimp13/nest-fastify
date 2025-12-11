@@ -137,4 +137,8 @@ export class AuthService {
   private async hashPassword(password: string): Promise<string> {
     return await hash(password, 10);
   }
+
+  private helloWorld(name: string) {
+    return `hello ${name.toLowerCase()}`;
+  }
 }
