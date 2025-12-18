@@ -9,4 +9,9 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Get('/ping')
+  ping(): { ok: boolean; message: string } {
+    return { ok: true, message: 'PONG!!' };
+  }
 }

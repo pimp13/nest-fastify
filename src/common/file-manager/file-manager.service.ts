@@ -1,11 +1,7 @@
-import { extname, join } from 'path';
+import { join } from 'path';
 import { promises as fs } from 'fs';
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
-import { UploadedFile, UploadOptions } from './file-manager.types';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import type { FastifyRequest } from 'fastify';
-import { File, FileFilterCallback } from 'fastify-multer/lib/interfaces';
 
 @Injectable()
 export class FileManagerService {

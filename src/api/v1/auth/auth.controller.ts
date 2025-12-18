@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   Post,
   Req,
   Res,
@@ -34,20 +35,38 @@ export class AuthController {
       response.accessToken,
       {
         path: '/',
-        httpOnly: true,
         maxAge: 259200, // 3 روز
         sameSite: 'lax',
-        secure: false, // در https باید true شود
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
       },
     );
 
     return { message: 'your logged is ok', ok: true };
   }
 
+  @Post('logout')
+  @HttpCode(200)
+  async logout(@Res({ passthrough: true }) res: FastifyReply) {
+    res.clearCookie(process.env.AUTH_COOKIE_NAME || '_token', {
+      path: '/',
+      maxAge: 0, // 3 روز
+      expires: new Date(0),
+      sameSite: 'lax',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+    });
+
+    return {
+      ok: true,
+      message: 'your are logouted',
+    };
+  }
+
   @UseGuards(JwtGuard)
   @Get('info')
-  getProfile(@Req() req) {
-    return req.user;
+  async getProfile(@Req() req) {
+    return this.authService.findUserInfoById(req.user.userId);
   }
 
   // @UseGuards(JwtGuard)

@@ -1,3 +1,4 @@
+import { UserRole } from '@prisma/client';
 import { Expose } from 'class-transformer';
 
 export class RegisterResponseDto {
@@ -9,4 +10,16 @@ export class RegisterResponseDto {
 
   @Expose()
   joined_at!: Date;
+}
+
+export class UserResponseInfo {
+  email: string;
+  id: string;
+  name: string;
+  avatarUrl: string | null;
+  version: number;
+  role: UserRole;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }
