@@ -30,18 +30,25 @@ async function bootstrap() {
   });
 
   // Set swagger api docs
-  const config = new DocumentBuilder()
-    .setTitle('Nest Fastify API')
-    .setDescription('API documentation for Nest-Fastify project')
-    .setVersion('1')
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+  if (
+    configService.get<'development' | 'production'>('NODE_ENV') ===
+    'development'
+  ) {
+    const config = new DocumentBuilder()
+      .setTitle('Nest Fastify API')
+      .setDescription('API documentation for Nest-Fastify project')
+      .setVersion('1')
+      .addBearerAuth()
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api/docs', app, document);
+  }
 
   // Set CORS
   app.enableCors({
-    origin: ['http://localhost:3000'],
+    origin: [
+      configService.get<string>('FRONT_END_URL') || 'http://localhost:3000',
+    ],
     credentials: true,
   });
 

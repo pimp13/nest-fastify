@@ -1,3 +1,4 @@
+import { extname } from 'path';
 import {
   BadRequestException,
   CallHandler,
@@ -5,9 +6,10 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
+import { diskStorage } from 'multer';
+import { FILE_OPTIONS_KEY } from './file-uploader.decorator';
 
 export interface FileUploderOptions {
   fieldName?: string;
@@ -18,9 +20,15 @@ export interface FileUploderOptions {
 
 @Injectable()
 export class FileUploaderInterceptor implements NestInterceptor {
+  constructor(private readonly reflector: Reflector) {}
+
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const req = context.switchToHttp().getRequest();
-    const options: FileUploderOptions = req.fileOptions || {};
+    const options =
+      this.reflector.get<FileUploderOptions>(
+        FILE_OPTIONS_KEY,
+        context.getHandler(),
+      ) || {};
 
     const filedName = options.fieldName || 'file';
     const maxSize = (options.maxSize || 5) * 1024 * 1024;
