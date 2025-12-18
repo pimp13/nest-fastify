@@ -1,13 +1,16 @@
+import cookie from '@fastify/cookie';
+import fastifyMultipart from '@fastify/multipart';
+import fastifyStatic from '@fastify/static';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ValidationPipe, VersioningType } from '@nestjs/common';
-import cookie from '@fastify/cookie';
+import { join } from 'path';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -17,8 +20,21 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
+  // Register file max size
+  app.register(fastifyMultipart, {
+    limits: {
+      fileSize: 5 * 1024 * 1024,
+    },
+  });
+
   // Set global prefix
   app.setGlobalPrefix('api');
+
+  // Serve static files from public
+  app.register(fastifyStatic, {
+    root: join(__dirname, '..', 'public'),
+    prefix: '/uploads/',
+  });
 
   // Set validation pipe
   app.useGlobalPipes(new ValidationPipe());

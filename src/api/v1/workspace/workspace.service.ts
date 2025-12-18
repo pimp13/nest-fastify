@@ -4,6 +4,7 @@ import { UpdateWorkspaceDto } from './dto/update-workspace.dto';
 import { PrismaService } from '@/prisma/prisma.service';
 import { ApiResponseService } from '@/utils/api-response/api-response.service';
 import { slugify } from '@/utils/slugify';
+import { TFile } from './dto/file.dto';
 
 @Injectable()
 export class WorkspaceService {
@@ -13,15 +14,18 @@ export class WorkspaceService {
     private readonly apiResponse: ApiResponseService,
   ) {}
 
-  async create(bodyData: CreateWorkspaceDto, userId: string) {
+  async create(bodyData: CreateWorkspaceDto, userId: string, file: TFile) {
+    this.logger.verbose('FILE =>', file);
+
     this.logger.verbose('Step 1: Check owner is existe.');
     const ownerId = bodyData.ownerId ? bodyData.ownerId : userId;
 
+    this.logger.verbose('Step 2: Create a unique slug.');
     const slug = bodyData.slug
       ? await this.generateUniqueSlug(bodyData.slug)
       : await this.generateUniqueSlug(bodyData.name);
 
-    this.logger.verbose('Step 2: Create and make a new WorkSpace.');
+    this.logger.verbose('Step 3: Create and make a new WorkSpace.');
     await this.prisma.workSpace.create({
       data: {
         name: bodyData.name,
