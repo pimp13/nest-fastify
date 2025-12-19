@@ -1,9 +1,4 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -32,6 +27,7 @@ import { LearningModule } from './learning/learning.module';
         },
       }),
     }),
+
     PrismaModule,
     AuthModule,
     WorkspaceModule,
