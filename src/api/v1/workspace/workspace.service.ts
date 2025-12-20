@@ -31,6 +31,7 @@ export class WorkspaceService {
         name: bodyData.name,
         slug,
         ownerId,
+        imageUrl: file.url,
       },
     });
 
