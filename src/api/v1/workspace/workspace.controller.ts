@@ -30,7 +30,7 @@ export class WorkspaceController {
     fieldName: 'image',
     allowedMimes: ['image/jpeg', 'image/jpg', 'image/png', 'image/svg'],
     maxSize: 1, // MB,
-    required: true,
+    required: false,
   })
   @UseInterceptors(FileUploaderInterceptor)
   async create(
@@ -46,8 +46,8 @@ export class WorkspaceController {
   }
 
   @Get()
-  findAll() {
-    return this.workspaceService.findAll();
+  findAll(@Req() req) {
+    return this.workspaceService.findAll(req.user.userId);
   }
 
   @Get(':id')

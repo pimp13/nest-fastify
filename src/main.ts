@@ -37,7 +37,13 @@ async function bootstrap() {
   });
 
   // Set validation pipe
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
 
   // Set versioning
   app.enableVersioning({

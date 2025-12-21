@@ -2,9 +2,15 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateWorkspaceDto } from './dto/create-workspace.dto';
 import { UpdateWorkspaceDto } from './dto/update-workspace.dto';
 import { PrismaService } from '@/prisma/prisma.service';
-import { ApiResponseService } from '@/utils/api-response/api-response.service';
+import {
+  ApiResponse,
+  ApiResponseService,
+} from '@/utils/api-response/api-response.service';
 import { slugify } from '@/utils/slugify';
 import { TFile } from './dto/file.dto';
+import { ConfigService } from '@nestjs/config';
+import { WorkspaceResponse } from './dto/response.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class WorkspaceService {
@@ -12,9 +18,14 @@ export class WorkspaceService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly apiResponse: ApiResponseService,
+    private readonly configService: ConfigService,
   ) {}
 
-  async create(bodyData: CreateWorkspaceDto, userId: string, file: TFile) {
+  async create(
+    bodyData: CreateWorkspaceDto,
+    userId: string,
+    file: TFile,
+  ): Promise<ApiResponse<null>> {
     this.logger.verbose('FILE =>', file);
 
     this.logger.verbose('Step 1: Check owner is existe.');
@@ -38,7 +49,7 @@ export class WorkspaceService {
     return this.apiResponse.success({ message: 'WorkSpace is created!' });
   }
 
-  async findAll() {
+  async findAll(userId: string): Promise<ApiResponse<WorkspaceResponse[]>> {
     const data = await this.prisma.workSpace.findMany({
       orderBy: {
         createdAt: 'desc',
@@ -50,10 +61,25 @@ export class WorkspaceService {
           },
         },
       },
+      where: {
+        ownerId: userId,
+      },
     });
-    if (!data) throw new NotFoundException('WorkSpace Is Not Found!');
 
-    return this.apiResponse.success({ data });
+    const finalData = plainToInstance(WorkspaceResponse, data, {
+      excludeExtraneousValues: false,
+      exposeDefaultValues: true,
+      exposeUnsetFields: false,
+    });
+
+    const appUrl =
+      this.configService.get<string>('APP_URL') || 'http://localhost:9090';
+
+    finalData.forEach((item) => {
+      item.fullDestination = `${appUrl}${item.imageUrl}`;
+    });
+
+    return this.apiResponse.success({ data: finalData });
   }
 
   async findOne(id: number) {
