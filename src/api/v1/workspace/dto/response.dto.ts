@@ -18,8 +18,8 @@ export class WorkspaceResponse {
   name: string;
   slug: string;
   ownerId: string;
-  imageUrl: string;
-  fullDestination: string;
+  imageUrl?: string | null;
+  fullDestination?: string | null;
   createdAt: Date;
   updatedAt: Date;
 

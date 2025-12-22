@@ -1,16 +1,16 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { CreateWorkspaceDto } from './dto/create-workspace.dto';
-import { UpdateWorkspaceDto } from './dto/update-workspace.dto';
 import { PrismaService } from '@/prisma/prisma.service';
 import {
   ApiResponse,
   ApiResponseService,
 } from '@/utils/api-response/api-response.service';
 import { slugify } from '@/utils/slugify';
-import { TFile } from './dto/file.dto';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { WorkspaceResponse } from './dto/response.dto';
 import { plainToInstance } from 'class-transformer';
+import { CreateWorkspaceDto } from './dto/create-workspace.dto';
+import { TFile } from './dto/file.dto';
+import { WorkspaceResponse } from './dto/response.dto';
+import { UpdateWorkspaceDto } from './dto/update-workspace.dto';
 
 @Injectable()
 export class WorkspaceService {
@@ -76,7 +76,7 @@ export class WorkspaceService {
       this.configService.get<string>('APP_URL') || 'http://localhost:9090';
 
     finalData.forEach((item) => {
-      item.fullDestination = `${appUrl}${item.imageUrl}`;
+      item.fullDestination = item.imageUrl ? `${appUrl}${item.imageUrl}` : null;
     });
 
     return this.apiResponse.success({ data: finalData });
